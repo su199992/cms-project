@@ -12,7 +12,7 @@ function App() {
         <Route path="/HomePage" Component={HomePage} />
       </Routes>
     </Router>
-  );
+  );  
 }
 
 export default App;
