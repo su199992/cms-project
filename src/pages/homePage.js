@@ -1,9 +1,11 @@
 import React from 'react';
 
 const HomePage = () => {
-    <div>
-         <h1>Hunet</h1>
-    </div>
+    return(
+        <div>
+            안녕하세요.
+        </div>
+    );
 };
 
 export default HomePage;

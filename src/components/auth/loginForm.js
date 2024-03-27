@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from './firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import './loginForm.css';
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleLogin = (event) => {
+  const goHome = () => {
+    navigate('/homePage');
+  }
+
+  const handleLogin = async (event) => {
     event.preventDefault();
-    // 로그인 처리 로직
-
-    // 아이디,패스워드 하드코딩
-    if(username === "1" && password === "1") {
-      navigate("/HomePage"); // 로그인 성공 시 홈페이지로 이동
-    } else {
-      alert("로그인 정보가 잘못되었습니다.");
+    if (!email.endsWith('@song.co.kr')) {
+      alert('유효하지 않은 이메일 주소입니다.');
+      return;
     }
-
-    // "아이디 기억하기"가 체크되어 있다면, 여기에 로컬 스토리지에 저장하는 로직을 추가할 수 있습니다.
-    if(rememberMe) {
-      localStorage.setItem('rememberUsername', username);
-    } else {
-      localStorage.removeItem('rememberUsername');
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert('로그인 성공!');
+      // 로그인 성공 후 처리 로직
+    } catch (error) {
+      alert('로그인 실패: ' + error.message);
     }
   };
 
@@ -32,33 +33,24 @@ const LoginForm = () => {
     <form onSubmit={handleLogin}>
       <h1>Hunet</h1>
       <div className='login-input user-id'>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder='ID'
+      <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일 주소"
+          required
         />
       </div>
       <div className='login-input user-pw'>
-        <input
+      <input
           type="password"
-          id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder='Password'
+          placeholder="비밀번호"
+          required
         />
       </div>
-      <div className='login-check'>
-        <input
-          type="checkbox"
-          id="rememberMe"
-          checked={rememberMe}
-          onChange={(e) => setRememberMe(e.target.checked)}
-        />
-        <label htmlFor="rememberMe">아이디 기억하기</label>
-      </div>
-      <button type="submit" className='login-submit'>로그인</button>
+      <button type="submit" className='login-submit' onClick={goHome}>로그인</button>
       <div className='login-bottom'>Contents Management System</div>
     </form>
     </div>
