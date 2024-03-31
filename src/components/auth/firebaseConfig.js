@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
+
 const firebaseConfig = {
   // 여기에 복사한 Firebase 앱 구성을 붙여넣습니다.
   apiKey: "AIzaSyBBlhGf459jwDgwTbRH1hTbH55NKWMFa8s",
@@ -13,5 +14,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+//const app = initializeApp();
 export const auth = getAuth(app);
 
