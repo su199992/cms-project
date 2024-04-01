@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth } from './firebaseConfig';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
+import { TextField, Button, Box, Container, Typography } from '@mui/material';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +11,7 @@ const LoginForm = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    
     if (!email.endsWith('@song.co.kr')) {
       alert('로그인 실패: 유효하지 않은 이메일 주소입니다.');
       return;
@@ -49,7 +46,7 @@ const LoginForm = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        width: 600,
+        width: 550,
         height: 450,
         border: '1px solid', 
         borderColor: 'grey.500',
@@ -61,48 +58,55 @@ const LoginForm = () => {
         component="h1" 
         gutterBottom 
         sx={{
-          fontSize: 80,
+          fontSize: 70,
           color: 'red',
-          marginTop: 2  
+          marginTop: 1,  
         }}>
-        Hunet
+        hunet
       </Typography>
-      <Box component="form" onSubmit={handleLogin} noValidate sx={{ mt: 1 }}>
+      <Box component="form" onSubmit={handleLogin} noValidate
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '90%',
+          alignItems: 'center'
+        }}
+      >
         <TextField
           label="이메일 주소"
           type="email"
           variant="outlined"
-          fullWidth
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           sx={{
-            width: '100%',
+            width: '90%',
           }}
         />
         <TextField
           label="비밀번호"
           type="password"
           variant="outlined"
-          fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           margin="normal"
           sx={{
-            width: '100%',
             marginBottom: 4,
+            width: '90%',
           }}
         />
         <Button 
           type="submit" 
           variant="contained" 
-          fullWidth
           sx={{
             height: 56,
             fontSize: 22,
             backgroundColor: 'grey',
-            marginBottom: 5
+            marginBottom: 1.5,
+            fontWeight: 700,
+            ":hover": {backgroundColor :'grey'},
+            width: '90%',
           }}>
           로그인
         </Button>
@@ -112,7 +116,7 @@ const LoginForm = () => {
           fontSize: 20,
           fontWeight: 700
           }}>
-        Contents Management System
+        Global Contents Management System
       </Typography>
     </Box>
     </Container>
