@@ -12,7 +12,7 @@ const LoginForm = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     
-    if (!email.endsWith('@song.co.kr')) {
+    if (!email.endsWith('@hunet.co.kr')) {
       alert('로그인 실패: 유효하지 않은 이메일 주소입니다.');
       return;
     }
