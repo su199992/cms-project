@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { auth } from './firebaseConfig';
 import { TextField, Button, Box, Container, Typography } from '@mui/material';
+import SignUpModal from '../../pages/signUp';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -29,6 +30,16 @@ const LoginForm = () => {
     } catch (error) {
       alert(`로그인 실패: ${error.message}`);
     }
+  };
+
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+
+  const handleSignUpOpen = () => {
+    setIsSignUpModalOpen(true);
+  };
+
+  const handleSignUpClose = () => {
+    setIsSignUpModalOpen(false);
   };
 
   return (
@@ -73,7 +84,7 @@ const LoginForm = () => {
         }}
       >
         <TextField
-          label="이메일 주소"
+          label="Email"
           type="email"
           variant="outlined"
           value={email}
@@ -84,7 +95,7 @@ const LoginForm = () => {
           }}
         />
         <TextField
-          label="비밀번호"
+          label="Password"
           type="password"
           variant="outlined"
           value={password}
@@ -108,8 +119,10 @@ const LoginForm = () => {
             ":hover": {backgroundColor :'grey'},
             width: '90%',
           }}>
-          로그인
+          L O G I N
         </Button>
+        <Button onClick={handleSignUpOpen} sx={{ textTransform: 'none' }}>SignUp</Button>
+        <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
       </Box>
       <Typography variant="body2" 
         sx={{ 

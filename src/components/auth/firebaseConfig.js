@@ -1,5 +1,6 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Firestore 사용 시
 
 
 const firebaseConfig = {
@@ -14,6 +15,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-//const app = initializeApp();
-export const auth = getAuth(app);
 
+export const auth = getAuth(app);
+export const db = getFirestore(app); // Firestore 사용 시
+// export const db = getDatabase(app); // Realtime Database 사용 시
