@@ -15,7 +15,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-export const auth = getAuth(app);
-export const db = getFirestore(app); // Firestore 사용 시
-// export const db = getDatabase(app); // Realtime Database 사용 시
+export { app, auth, db };

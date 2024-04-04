@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { TextField, Button, Box, Container, Typography } from '@mui/material';
 import SignUpModal from '../../pages/signUp';
@@ -10,23 +10,13 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const handleLogin = async (e) => {
+  e.preventDefault();
     
-    if (!email.endsWith('@hunet.co.kr')) {
-      alert('로그인 실패: 유효하지 않은 이메일 주소입니다.');
-      return;
-    }
-
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // 사용자가 초기 비밀번호로 로그인한 경우 비밀번호 변경 페이지로 이동
-      if (password === '1234') {
-        navigate('/changePassword');
-      } else {
-        // 초기 비밀번호가 아닌 경우 홈페이지로 이동
-        navigate('/homePage');
-      }
+      alert("로그인 성공");
+      navigate('/homePage')
     } catch (error) {
       alert(`로그인 실패: ${error.message}`);
     }
