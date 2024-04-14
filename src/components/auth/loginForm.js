@@ -15,7 +15,11 @@ const LoginForm = () => {
     
     try {
       await signInWithEmailAndPassword(auth, email, password);
+<<<<<<< HEAD
       alert("로그인 성공");
+=======
+      //alert("로그인 성공");
+>>>>>>> b268604 (homePage 메뉴바  추가)
       navigate('/homePage')
     } catch (error) {
       alert(`로그인 실패: ${error.message}`);
