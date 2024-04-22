@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { auth, db  } from '../components/auth/firebaseConfig';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore"; // Firestore 사용 시
-import { TextField, Button, Box, Dialog, DialogTitle, DialogContent, Snackbar } from '@mui/material';
+import { TextField, Button, Box, Dialog, DialogTitle, DialogContent } from '@mui/material';
 
 const SignUpModal = ({ open, onClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar의 상태 관리
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -24,19 +23,10 @@ const SignUpModal = ({ open, onClose }) => {
         email: email,
       });
       
-      setSnackbarOpen(true); // 회원가입 성공 시 Snackbar를 열기
     } catch (error) {
-      console.error(error);
+
       alert(`회원가입 실패 : ${error.message}`);
     }
-  };
-
-  // Snackbar를 닫는 함수
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
   };
 
   return (
@@ -94,12 +84,6 @@ const SignUpModal = ({ open, onClose }) => {
         </Button>
         </Box>
         </DialogContent>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          message="회원가입 완료"
-        />
     </Dialog>
   );
 };

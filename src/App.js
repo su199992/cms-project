@@ -4,6 +4,7 @@ import LoginForm from './components/auth/loginForm';
 import HomePage from './pages/homePage';
 import ChangePassword from './pages/changePassword'
 import SignUp from './pages/signUp'
+import Alert from './pages/alert'
 import './styles/reset.css';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/HomePage" Component={HomePage} />
         <Route path="/ChangePassword" Component={ChangePassword} />
         <Route path="/SignUp" Component={SignUp} />
+        <Route path="/Alert" Component={Alert} />
       </Routes>
     </Router>
   );  
