@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebaseConfig';
 import { TextField, Button, Box, Container, Typography } from '@mui/material';
-import SignUpModal from '../../pages/signUp';
+import SignUpModal from './signUp';
+import { auth } from './firebaseConfig';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -62,7 +62,7 @@ const LoginForm = () => {
         sx={{
           fontSize: 70,
           color: 'red',
-          marginTop: 1,  
+          marginTop: 2.5,  
         }}>
         hunet
       </Typography>
@@ -112,7 +112,7 @@ const LoginForm = () => {
           }}>
           L O G I N
         </Button>
-        <Button onClick={handleSignUpOpen} sx={{ textTransform: 'none' }}>SignUp</Button>
+        <Button onClick={handleSignUpOpen} sx={{ textTransform: 'none', fontSize: '18px'}}>SignUp</Button>
         <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
       </Box>
       <Typography variant="body2" 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { auth, db } from '../components/auth/firebaseConfig';
+import { auth, db } from './firebaseConfig';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { TextField, Button, Box, Dialog, DialogTitle, DialogContent, Snackbar } from '@mui/material';
@@ -10,7 +10,7 @@ const SignUpModal = ({ open, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState();
   const [alertSeverity, setAlertSeverity] = useState('');
 
   const handleSignUp = async (e) => {
@@ -35,8 +35,25 @@ const SignUpModal = ({ open, onClose }) => {
     } catch (error) {
       //console.error(error);
       setAlertSeverity('error'); // 회원가입 실패 시 alertSeverity를 'error'로 설정
-      setSnackbarMessage('회원가입 실패');
       setSnackbarOpen(true);
+      // 에러 코드에 대한 안내 문구 반환하기
+      // 사전 유효성 검증 여부 등을 고려해 발생 빈도 순으로 분기처리하는게 좋다.
+      switch (error.code) {
+        case "auth/user-not-found" || "auth/wrong-password":
+          return setSnackbarMessage("이메일 혹은 비밀번호가 일치하지 않습니다.");
+        case "auth/email-already-in-use":
+          return setSnackbarMessage("이미 사용 중인 이메일입니다.");
+        case "auth/weak-password":
+          return setSnackbarMessage("비밀번호는 6글자 이상이어야 합니다.");
+        case "auth/network-request-failed":
+          return setSnackbarMessage("네트워크 연결에 실패 하였습니다.");
+        case "auth/invalid-email":
+          return setSnackbarMessage("잘못된 이메일 형식입니다.");
+        case "auth/internal-error":
+          return setSnackbarMessage("잘못된 요청입니다.");
+        default:
+          return setSnackbarMessage("로그인에 실패 하였습니다.");
+      }
     }
   };
 

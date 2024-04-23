@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { auth } from '../components/auth/firebaseConfig'; // auth 객체 직접 임포트
+import { auth } from './firebaseConfig'; // auth 객체 직접 임포트
 import { updatePassword } from 'firebase/auth';
 
 const ChangePasswordPage = () => {
