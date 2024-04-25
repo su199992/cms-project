@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // Firestore 사용 시
-
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   // 여기에 복사한 Firebase 앱 구성을 붙여넣습니다.

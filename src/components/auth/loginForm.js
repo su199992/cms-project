@@ -11,12 +11,9 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-    
+  e.preventDefault();  
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      //alert("로그인 성공");
-
       navigate('/homePage')
     } catch (error) {
       alert(`로그인 실패: ${error.message}`);

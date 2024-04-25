@@ -23,7 +23,7 @@ const HomePage = () => {
           <IconButton size="large" color="inherit" sx={{ marginLeft: 6}} onClick={toggleDrawer}>
             <MenuIcon sx={{ fontSize: 35 }}/>
           </IconButton>
-          <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'180px',  marginRight: 1}}>관리자 정보</Button>
+          <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'180px',  marginRight: 1}}>담당자 정보</Button>
           <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'100px'}}>송수정</Button>
           <FormControlLabel value="login" control={<Switch onChange={handleLogout} />} sx={{ position:'absolute', right:'15px' }} />
           {/* <Avatar sx={{fontSize: '12px'}}>송수정</Avatar> */}

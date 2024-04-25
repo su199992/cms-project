@@ -12,6 +12,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FolderIcon from '@mui/icons-material/Folder';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import colorTheme from './colorTheme';
+import AdminInfoModal from './adminInfo';
 
 const drawerWidth = 240;
 
@@ -80,13 +81,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const ListIcon = [
-  {text: '콘텐츠', icon: 'UploadFileIcon'},
-  {text: '업로드', icon: 'FolderIcon'}
+const listIcon = [
+  {text: '콘텐츠', icon: <FolderIcon />},
+  {text: '업로드', icon: <UploadFileIcon />}
 ]
 
 const MiniDrawer = () => {
   const navigate = useNavigate();
+
   const handleLogout = () => {
     navigate('/');
   };
@@ -100,6 +102,16 @@ const MiniDrawer = () => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const [isAdminInfoOpen, setIsAdminInfoOpen] = useState(false);
+
+  const handleAdminInfoOpen = () => {
+    setIsAdminInfoOpen(true);
+  };
+
+  const handleAdminInfoClose = () => {
+    setIsAdminInfoOpen(false);
   };
 
   return (
@@ -123,7 +135,8 @@ const MiniDrawer = () => {
           <Typography variant="h6" noWrap component="div">
             hunet
           </Typography>
-          <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'180px',  marginRight: 1}}>관리자 정보</Button>
+          <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'180px',  marginRight: 1}} onClick={handleAdminInfoOpen}>담당자 정보</Button>
+          <AdminInfoModal open={isAdminInfoOpen} onClose={handleAdminInfoClose} />
           <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'100px'}}>송수정</Button>
           <FormControlLabel value="login" control={<Switch onChange={handleLogout} />} sx={{ position:'absolute', right:'15px' }} />
           {/* <Avatar sx={{fontSize: '12px'}}>송수정</Avatar> */}
@@ -137,7 +150,7 @@ const MiniDrawer = () => {
         </DrawerHeader>
         <Divider />
         <List>
-          {ListIcon.map((item, index) => (
+          {listIcon.map((item, index) => (
             <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
@@ -153,7 +166,7 @@ const MiniDrawer = () => {
                   justifyContent: 'center',
                 }}
               > 
-              <{item.icon} />
+               {item.icon}
               </ListItemIcon>
                 <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>

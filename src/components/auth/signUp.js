@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth, db } from './firebaseConfig';
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { TextField, Button, Box, Dialog, DialogTitle, DialogContent, Snackbar } from '@mui/material';
 import Alert from '@mui/material/Alert'; // 올바른 경로에서 Alert 가져오기
 
@@ -17,13 +17,13 @@ const SignUpModal = ({ open, onClose }) => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      const createdUser = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(createdUser);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid; // Firebase UID
 
-      await addDoc(collection(db, "users"), {
+      await setDoc(doc(db, "users", uid), {
         name: name,
         email: email,
-      });
+     });
       setAlertSeverity('success');
       setSnackbarMessage('회원가입 완료');
       setSnackbarOpen(true);
@@ -62,7 +62,7 @@ const SignUpModal = ({ open, onClose }) => {
       return;
     }
     setSnackbarOpen(false);
-  };
+  }; 
 
   return (
     <>
