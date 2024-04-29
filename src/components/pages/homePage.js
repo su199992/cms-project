@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled, useTheme } from '@mui/material/styles';
 import { Box,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Typography,Divider,CssBaseline,Button,FormControlLabel,Switch,IconButton } from '@mui/material';
@@ -13,6 +13,9 @@ import FolderIcon from '@mui/icons-material/Folder';
 import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import colorTheme from './colorTheme';
 import AdminInfoModal from './adminInfo';
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from '../auth/firebaseConfig'; // auth와 db 인스턴스가 초기화된 설정을 import합니다.
 
 const drawerWidth = 240;
 
@@ -88,6 +91,7 @@ const listIcon = [
 
 const MiniDrawer = () => {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
 
   const handleLogout = () => {
     navigate('/');
@@ -114,36 +118,65 @@ const MiniDrawer = () => {
     setIsAdminInfoOpen(false);
   };
 
+  useEffect(() => {
+    // Firebase Auth 상태 변경 감지
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // 사용자가 로그인한 경우
+        const uid = user.uid;
+        // Firestore에서 사용자의 'name' 필드 조회
+        const userDocRef = doc(db, "users", uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          // 문서가 존재하는 경우, 'name' 필드 값을 상태에 설정
+          setUserName(userDoc.data().name);
+        } else {
+          console.log("No user data available");
+        }
+      } else {
+        // 사용자가 로그인하지 않은 경우
+        console.log("User is not logged in");
+        setUserName("");
+      }
+    });
+
+    // 컴포넌트 언마운트 시 구독 해제
+    return () => unsubscribe();
+  }, []);
+
   return (
     <ThemeProvider theme={colorTheme}> 
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            hunet
-          </Typography>
-          <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'180px',  marginRight: 1}} onClick={handleAdminInfoOpen}>담당자 정보</Button>
-          <AdminInfoModal open={isAdminInfoOpen} onClose={handleAdminInfoClose} />
-          <Button variant="outlined" color="inherit" sx={{ position:'absolute', right:'100px'}}>송수정</Button>
-          <FormControlLabel value="login" control={<Switch onChange={handleLogout} />} sx={{ position:'absolute', right:'15px' }} />
-          {/* <Avatar sx={{fontSize: '12px'}}>송수정</Avatar> */}
+        <Toolbar sx={{display: 'flex', justifyContent: 'space-between', height: '80px'}} >
+          <Box sx={{ display: 'flex', alignItems: 'center'}}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: 5,
+                ...(open && { display: 'none' }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h3" noWrap component="div">
+              hunet
+            </Typography>
+            </Box>
+            <Box>
+              <Button variant="outlined" color="inherit" sx={{ marginRight: 0.5 }} onClick={handleAdminInfoOpen}>담당자 정보</Button>
+              <AdminInfoModal open={isAdminInfoOpen} onClose={handleAdminInfoClose} />
+              <Button variant="outlined" color="inherit" sx={{ marginRight: 2 }}>{userName}</Button>
+              <FormControlLabel value="login" control={<Switch onChange={handleLogout} />} sx={{ marginRight: 0 }} />
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
+        <DrawerHeader sx={{height: '80px'}}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>

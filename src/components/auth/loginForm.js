@@ -75,6 +75,7 @@ const LoginForm = () => {
           label="Email"
           type="email"
           variant="outlined"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -86,6 +87,7 @@ const LoginForm = () => {
           label="Password"
           type="password"
           variant="outlined"
+          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

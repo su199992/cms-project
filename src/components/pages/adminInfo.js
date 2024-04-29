@@ -1,5 +1,8 @@
-import * as React from 'react';
-import {Box,Button,Typography,Modal,Table,TableBody,TableCell,TableContainer,TableRow,Paper} from '@mui/material'; //TableHead
+import React, { useState } from 'react';
+import { Box, Button, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead, TextField } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 
 const modalStyle = {
   position: 'absolute',
@@ -12,56 +15,71 @@ const modalStyle = {
   p: 4,
 };
 
-const rows = [
-  { administrator: '포팅Unit', call: '', email: 'ld_pt@hunet.co.kr' },
-  { administrator: '고봉석 Unit장', call: '070-5210-4752', email: 'bongseok@hunet.co.kr' },
-  { administrator: '조성용 책임', call:'070-5210-4758', email: 'pranaria@hunet.co.kr' },
-  { administrator: '송수정 사원', call: '', email: 'song1992@hunet.co.kr' }
-];
+const AdminInfoModal = ({ open, onClose }) => {
+  const [rows, setRows] = useState([]);
 
-const AdminInfoModal = ({open, onClose}) => {
+  const handleAddRow = () => {
+    const newRow = { id: rows.length, administrator: '', call: '', email: '' };
+    setRows([...rows, newRow]);
+  };
+
+  const handleChange = (index, field, value) => {
+    const newRows = rows.map((row, idx) => {
+      if (idx === index) {
+        return { ...row, [field]: value };
+      }
+      return row;
+    });
+    setRows(newRows);
+  };
 
   return (
-      <Modal
-        open={open}
-        onClose={onClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        BackdropProps={{ invisible: true }}
-      >
-        <Box sx={modalStyle}>
-          <Box sx={{display:'flex', justifyContent: 'space-between', marginBottom: 3}}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">담당자 정보</Typography>
-            <Button onClick={onClose} variant="outlined" color="inherit" size="small">닫기</Button>
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+      BackdropProps={{ invisible: true }}
+    >
+      <Box sx={modalStyle}>
+        <Box sx={{ display: 'flex', marginBottom: 3, justifyContent: 'space-between' }}>
+          <Box>
+            <Button onClick={handleAddRow} variant="outlined" color="inherit" size="small"><AddIcon /></Button>
+            <Button variant="outlined" color="inherit" size="small"><DoneIcon /></Button>
           </Box>
-          <TableContainer component={Paper}>
-            <Table sx={{ Width: '100%' }} size="small" aria-label="a dense table">
-              {/* <TableHead>
-                <TableRow>
-                  <TableCell align="left" sx={{width:'25%'}}>담당자</TableCell>
-                  <TableCell align="left" sx={{width:'35%'}}>번호</TableCell>
-                  <TableCell align="left" sx={{width:'40%'}}>이메일</TableCell>
-                </TableRow>
-              </TableHead> */}
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow
-                    key={row.administrator}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.administrator}
-                    </TableCell>
-                    <TableCell align="left">{row.call}</TableCell>
-                    <TableCell align="left">{row.email}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Box>
+            <Button onClick={onClose} variant="outlined" color="inherit" size="small"><CloseIcon /></Button>
+          </Box>
         </Box>
-      </Modal>
+        <TableContainer component={Paper}>
+          <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">담당자</TableCell>
+                <TableCell align="left">번호</TableCell>
+                <TableCell align="left">이메일</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">
+                    <TextField value={row.administrator} onChange={e => handleChange(index, 'administrator', e.target.value)} fullWidth />
+                  </TableCell>
+                  <TableCell align="left">
+                    <TextField value={row.call} onChange={e => handleChange(index, 'call', e.target.value)} fullWidth />
+                  </TableCell>
+                  <TableCell align="left">
+                    <TextField value={row.email} onChange={e => handleChange(index, 'email', e.target.value)} fullWidth />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </Modal>
   );
-}
+};
 
 export default AdminInfoModal;
