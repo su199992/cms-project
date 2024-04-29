@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, Modal, Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead, TextField } from '@mui/material';
+import { db } from '../auth/firebaseConfig';
+import { collection, addDoc, doc, deleteDoc, getDoc } from 'firebase/firestore';
+import { Box, Button, Modal, Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const modalStyle = {
   position: 'absolute',
@@ -17,20 +20,55 @@ const modalStyle = {
 
 const AdminInfoModal = ({ open, onClose }) => {
   const [rows, setRows] = useState([]);
+  const [newRows, setNewRows] = useState([]);
 
   const handleAddRow = () => {
-    const newRow = { id: rows.length, administrator: '', call: '', email: '' };
-    setRows([...rows, newRow]);
+    const newRow = { id: Date.now(), administrator: '', call: '', email: '', isNew: true };
+    setNewRows([...newRows, newRow]);
   };
 
-  const handleChange = (index, field, value) => {
-    const newRows = rows.map((row, idx) => {
-      if (idx === index) {
+  const handleChange = (id, field, value) => {
+    const updatedRows = newRows.map(row => {
+      if (row.id === id) {
         return { ...row, [field]: value };
       }
       return row;
     });
-    setRows(newRows);
+    setNewRows(updatedRows);
+  };
+
+  const handleSaveData = async () => {
+    for (const row of newRows) {
+      const docRef = await addDoc(collection(db, "administrators"), {
+        administrator: row.administrator,
+        call: row.call,
+        email: row.email
+      });
+      console.log("Document written with ID: ", docRef.id);
+      row.isNew = false; // Mark as not new after saving
+    }
+    setRows([...rows, ...newRows]); // Move new rows to regular rows
+    setNewRows([]); // Clear new rows
+  };
+
+  const handleDelete = async (id) => {
+    const docId = String(id);  // id가 숫자일 경우 문자열로 변환
+    const docRef = doc(db, "administrators", docId);
+  
+    // 문서 존재 여부 확인
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      try {
+        await deleteDoc(docRef);
+        console.log("Document deleted with ID:", docId);
+        setRows(rows.filter(row => row.id !== id));
+      } catch (error) {
+        console.error("Error removing document: ", error);
+      }
+    } else {
+      console.error("Document not found with ID:", docId);
+      alert("Document not found or already deleted.");
+    }
   };
 
   return (
@@ -45,7 +83,7 @@ const AdminInfoModal = ({ open, onClose }) => {
         <Box sx={{ display: 'flex', marginBottom: 3, justifyContent: 'space-between' }}>
           <Box>
             <Button onClick={handleAddRow} variant="outlined" color="inherit" size="small"><AddIcon /></Button>
-            <Button variant="outlined" color="inherit" size="small"><DoneIcon /></Button>
+            <Button onClick={handleSaveData} variant="outlined" color="inherit" size="small"><DoneIcon /></Button>
           </Box>
           <Box>
             <Button onClick={onClose} variant="outlined" color="inherit" size="small"><CloseIcon /></Button>
@@ -58,20 +96,34 @@ const AdminInfoModal = ({ open, onClose }) => {
                 <TableCell align="left">담당자</TableCell>
                 <TableCell align="left">번호</TableCell>
                 <TableCell align="left">이메일</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={index}>
+              {[...rows, ...newRows].map((row, index) => (
+                <TableRow key={row.id}>
                   <TableCell component="th" scope="row">
-                    <TextField value={row.administrator} onChange={e => handleChange(index, 'administrator', e.target.value)} fullWidth />
+                    {row.isNew ? (
+                      <TextField value={row.administrator} onChange={e => handleChange(row.id, 'administrator', e.target.value)} fullWidth />
+                    ) : (
+                      row.administrator
+                    )}
                   </TableCell>
                   <TableCell align="left">
-                    <TextField value={row.call} onChange={e => handleChange(index, 'call', e.target.value)} fullWidth />
+                    {row.isNew ? (
+                      <TextField value={row.call} onChange={e => handleChange(row.id, 'call', e.target.value)} fullWidth />
+                    ) : (
+                      row.call
+                    )}
                   </TableCell>
                   <TableCell align="left">
-                    <TextField value={row.email} onChange={e => handleChange(index, 'email', e.target.value)} fullWidth />
+                    {row.isNew ? (
+                      <TextField value={row.email} onChange={e => handleChange(row.id, 'email', e.target.value)} fullWidth />
+                    ) : (
+                      row.email
+                    )}
                   </TableCell>
+                  <TableCell align="right"><Button onClick={() => handleDelete(row.id)}><DeleteIcon/></Button></TableCell>
                 </TableRow>
               ))}
             </TableBody>
