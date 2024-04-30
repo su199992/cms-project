@@ -23,10 +23,10 @@ const SignUpModal = ({ open, onClose }) => {
       await setDoc(doc(db, "users", uid), {
         name: name,
         email: email,
-     });
-      setSnackbarOpen(true);
+      });
       setAlertSeverity('success');
       setSnackbarMessage('회원가입 완료');
+      setSnackbarOpen(true);
 
       // 회원가입이 완료되면 입력 필드 리셋
       setName('');
@@ -41,6 +41,7 @@ const SignUpModal = ({ open, onClose }) => {
   };
 
   const handleCloseSnackbar = (event, reason) => {
+    // 가입창을 닫아도 사라지지 않고, autoHideDuration:{3000} 지난 후 사라짐
     if (reason === 'clickaway') {
       return;
     }
@@ -110,7 +111,7 @@ const SignUpModal = ({ open, onClose }) => {
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // 위치 설정
       >
         <Alert
           onClose={handleCloseSnackbar}

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebaseConfig';
 import { TextField, Button, Box, Container, Typography } from '@mui/material';
 import SignUpModal from './signUp';
-import { auth } from './firebaseConfig';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -19,8 +20,6 @@ const LoginForm = () => {
       alert(`로그인 실패: ${error.message}`);
     }
   };
-
-  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
   const handleSignUpOpen = () => {
     setIsSignUpModalOpen(true);
@@ -111,7 +110,9 @@ const LoginForm = () => {
           }}>
           L O G I N
         </Button>
-        <Button onClick={handleSignUpOpen} sx={{ textTransform: 'none', fontSize: '18px'}}>SignUp</Button>
+        <Button 
+        onClick={handleSignUpOpen} 
+        sx={{ textTransform: 'none', fontSize: '18px'}}>SignUp</Button>
         <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
       </Box>
       <Typography variant="body2" 
