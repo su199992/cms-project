@@ -119,7 +119,7 @@ const LoginForm = () => {
           fontSize: 20,
           fontWeight: 700
           }}>
-        Global Contents Management System
+        Open Contents Management System
       </Typography>
     </Box>
     </Container>

@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   // 여기에 복사한 Firebase 앱 구성을 붙여넣습니다.
-  apiKey: REACT_APP_GOOGLE_API_KEY,
+  apiKey: "AIzaSyBBlhGf459jwDgwTbRH1hTbH55NKWMFa8s",
   authDomain: "cms-project-3b03e.firebaseapp.com",
   projectId: "cms-project-3b03e",
   storageBucket: "cms-project-3b03e.appspot.com",

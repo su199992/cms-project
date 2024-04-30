@@ -15,14 +15,8 @@ const LoginForm = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (!email.endsWith('@song.co.kr') || password !== '1234') {
-      alert('로그인 실패: 유효하지 않은 이메일 또는 비밀번호입니다.');
-      return;
-    }
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // 비밀번호 변경 페이지로 이동
-      navigate('/changePassword');
     } catch (error) {
       alert(`로그인 실패: ${error.message}`);
     }

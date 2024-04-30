@@ -92,13 +92,14 @@ const listIcon = [
 const MiniDrawer = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [open, setOpen] = useState(false);
+  const [isAdminInfoOpen, setIsAdminInfoOpen] = useState(false);
 
   const handleLogout = () => {
     navigate('/');
   };
   
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -107,8 +108,6 @@ const MiniDrawer = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  const [isAdminInfoOpen, setIsAdminInfoOpen] = useState(false);
 
   const handleAdminInfoOpen = () => {
     setIsAdminInfoOpen(true);
@@ -135,7 +134,6 @@ const MiniDrawer = () => {
         }
       } else {
         // 사용자가 로그인하지 않은 경우
-        console.log("User is not logged in");
         setUserName("");
       }
     });
