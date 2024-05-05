@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { styled, useTheme } from '@mui/material/styles';
-import { Box,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Typography,Divider,CssBaseline,Button,FormControlLabel,Switch,IconButton } from '@mui/material';
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from '../auth/firebaseConfig';
+import { styled, useTheme, ThemeProvider } from '@mui/material/styles';
+import { Box,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Typography,Divider,CssBaseline,Button,FormControlLabel,Switch,IconButton, Toolbar } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import FolderIcon from '@mui/icons-material/Folder';
-import ThemeProvider from '@mui/material/styles/ThemeProvider';
 import colorTheme from './colorTheme';
 import AdminInfoModal from './adminInfo';
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from '../auth/firebaseConfig'; // auth와 db 인스턴스가 초기화된 설정을 import합니다.
 
 const drawerWidth = 240;
 
@@ -194,7 +192,7 @@ const MiniDrawer = () => {
                 sx={{
                   minWidth: 0,
                   mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
+                  justifyContent: 'center'
                 }}
               > 
                {item.icon}

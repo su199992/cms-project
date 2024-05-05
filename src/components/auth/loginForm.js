@@ -4,11 +4,13 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { TextField, Button, Box, Container, Typography } from '@mui/material';
 import SignUpModal from './signUp';
+import AuthAlert from './authAlert';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+  const [errorCode, setErrorCode] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -17,7 +19,7 @@ const LoginForm = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/homePage')
     } catch (error) {
-      alert(`로그인 실패: ${error.message}`);
+      setErrorCode(error.code);
     }
   };
 
@@ -55,20 +57,14 @@ const LoginForm = () => {
         variant="h4" 
         component="h1" 
         gutterBottom 
-        sx={{
-          fontSize: 70,
-          color: 'red',
-          marginTop: 2.5,  
-        }}>
+        sx={{ fontSize: 70, color: 'red', marginTop: 2.5 }}>
         hunet
       </Typography>
-      <Box component="form" onSubmit={handleLogin} noValidate
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '90%',
-          alignItems: 'center'
-        }}
+      <Box 
+        component="form" 
+        onSubmit={handleLogin} 
+        noValidate
+        sx={{ display: 'flex', flexDirection: 'column', width: '90%', alignItems: 'center' }}
       >
         <TextField
           label="Email"
@@ -78,9 +74,7 @@ const LoginForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          sx={{
-            width: '90%',
-          }}
+          sx={{ width: '90%' }}
         />
         <TextField
           label="Password"
@@ -91,10 +85,7 @@ const LoginForm = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
           margin="normal"
-          sx={{
-            marginBottom: 4,
-            width: '90%',
-          }}
+          sx={{ marginBottom: 4, width: '90%' }}
         />
         <Button 
           type="submit" 
@@ -111,19 +102,20 @@ const LoginForm = () => {
           L O G I N
         </Button>
         <Button 
-        onClick={handleSignUpOpen} 
-        sx={{ textTransform: 'none', fontSize: '18px'}}>SignUp</Button>
+          onClick={handleSignUpOpen} 
+          sx={{ textTransform: 'none', fontSize: '18px'}}>
+          SignUp
+        </Button>
         <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
       </Box>
       <Typography variant="body2" 
-        sx={{ 
-          fontSize: 20,
-          fontWeight: 700
-          }}>
+        sx={{ fontSize: 20, ontWeight: 700 }}>
         Open Contents Management System
       </Typography>
     </Box>
+    <AuthAlert errorCode={errorCode}/>
     </Container>
+    
   );
 };
 
