@@ -4,17 +4,17 @@ import { Snackbar, Alert } from '@mui/material';
 const AuthAlert = ({ errorCode, successMessage }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [alertSeverity, setAlertSeverity] = useState('');
+  const [alertMessage, setalertMessage] = useState('');
 
   useEffect(() => {
     if (errorCode) {
       setSnackbarMessage(getErrorMessage(errorCode));
       setSnackbarOpen(true);
-      setAlertSeverity('error');
+      setalertMessage('error');
     } else if (successMessage) {
       setSnackbarMessage(successMessage);
       setSnackbarOpen(true);
-      setAlertSeverity('success');
+      setalertMessage('success');
     }
   }, [errorCode, successMessage]);
 
@@ -52,12 +52,12 @@ const AuthAlert = ({ errorCode, successMessage }) => {
   return (
     <Snackbar 
       open={snackbarOpen} 
-      autoHideDuration={5000} 
+      autoHideDuration={3000} 
       onClose={handleCloseSnackbar} 
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
       <Alert 
         onClose={handleCloseSnackbar} 
-        severity={alertSeverity} 
+        severity={alertMessage} 
         sx={{ width: '100%' }}>
         {snackbarMessage}
       </Alert>

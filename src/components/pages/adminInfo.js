@@ -1,33 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../auth/firebaseConfig';
-import { collection, addDoc, doc, deleteDoc, getDoc } from 'firebase/firestore';
-import { Box, Button, Modal, Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead, TextField } from '@mui/material';
+import { collection, addDoc, doc, deleteDoc, updateDoc, getDocs } from 'firebase/firestore';
+import { Modal, List, ListItem, ListItemText, ListItemAvatar, Avatar, Box, Typography, Button, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import DoneIcon from '@mui/icons-material/Done';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+
 
 const modalStyle = {
-  position: 'absolute',
+  position: 'relative',
   top: '50%',
   left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 570,
+  //transform: 'translate(-50%, -50%)',
+  width: 500,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  border: '1px solid #000',
   p: 4,
 };
 
 const AdminInfoModal = ({ open, onClose }) => {
   const [rows, setRows] = useState([]);
   const [newRows, setNewRows] = useState([]);
+  const [editMode, setEditMode] = useState(null);  // 현재 수정 중인 항목의 ID 저장
 
-  const handleAddRow = () => {
-    const newRow = { id: Date.now(), administrator: '', call: '', email: '', isNew: true };
-    setNewRows([...newRows, newRow]);
+  useEffect(() => {
+    fetchData();  // 컴포넌트 로드 시 데이터 불러오기
+  }, []);
+
+  // Firestore에서 데이터 불러오기를 위한 함수
+  const fetchData = async () => {
+    const querySnapshot = await getDocs(collection(db, "adminInfo"));
+    const fetchedRows = [];
+    querySnapshot.forEach((doc) => {
+      fetchedRows.push({ ...doc.data(), id: doc.id, isNew: false });
+    });
+    setRows(fetchedRows);
   };
 
-  const handleChange = (id, field, value) => {
+  const handleInfoAdd = () => {
+    const newRow = { id: Date.now(), name: '', info: '', isNew: true };
+    setNewRows([...newRows, newRow]); // 새로운 행 추가
+    setEditMode(null); // 기존 편집 모드가 있다면 종료
+  };
+
+  const handleInfoChange = (id, field, value) => {
     const updatedRows = newRows.map(row => {
       if (row.id === id) {
         return { ...row, [field]: value };
@@ -37,98 +55,115 @@ const AdminInfoModal = ({ open, onClose }) => {
     setNewRows(updatedRows);
   };
 
-  const handleSaveData = async () => {
+  // Firestore에 데이터 저장 및 자동 리로드
+  const handleSaveToFirestore = async () => {
     for (const row of newRows) {
-      const docRef = await addDoc(collection(db, "administrators"), {
-        administrator: row.administrator,
-        call: row.call,
-        email: row.email
+      await addDoc(collection(db, "adminInfo"), {
+        name: row.name,
+        info: row.info
       });
-      console.log("Document written with ID: ", docRef.id);
-      row.isNew = false; // Mark as not new after saving
     }
-    setRows([...rows, ...newRows]); // Move new rows to regular rows
-    setNewRows([]); // Clear new rows
+    await fetchData();  // 저장 후 데이터 리로드
+    setNewRows([]);  // 입력 필드 초기화
   };
 
-  const handleDelete = async (id) => {
-    const docId = String(id);  // id가 숫자일 경우 문자열로 변환
-    const docRef = doc(db, "administrators", docId);
-  
-    // 문서 존재 여부 확인
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      try {
-        await deleteDoc(docRef);
-        console.log("Document deleted with ID:", docId);
-        setRows(rows.filter(row => row.id !== id));
-      } catch (error) {
-        console.error("Error removing document: ", error);
-      }
-    } else {
-      console.error("Document not found with ID:", docId);
-      alert("Document not found or already deleted.");
+  // 수정 모드 활성화 및 기존 데이터 로드
+  const handleInfoEdit = (id) => {
+    const selectedRow = rows.find(row => row.id === id) || newRows.find(row => row.id === id);
+    setEditMode(selectedRow);
+  };
+
+  // 수정된 데이터를 Firestore에 저장
+  const handleUpdateToFirestore = async () => {
+    if (editMode) {
+      const docRef = doc(db, "adminInfo", editMode.id);
+      await updateDoc(docRef, {
+        name: editMode.name,
+        info: editMode.info
+      });
+      setEditMode(null);  // 수정 모드 종료
+      fetchData();  // 데이터 업데이트 후 새로 불러오기
     }
+  };
+  const handleInfoDelete = async (id) => {
+    await deleteDoc(doc(db, "adminInfo", id));
+    await fetchData();  // 삭제 후 데이터 리로드
+  };
+
+  const handleInfoClose = () => {
+    setNewRows([]);  // 입력 정보 초기화
+    onClose();  // 모달 닫기
   };
 
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      onClose={handleInfoClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       BackdropProps={{ invisible: true }}
+      sx={modalStyle}
     >
-      <Box sx={modalStyle}>
-        <Box sx={{ display: 'flex', marginBottom: 3, justifyContent: 'space-between' }}>
-          <Box>
-            <Button onClick={handleAddRow} variant="outlined" color="inherit" size="small"><AddIcon /></Button>
-            <Button onClick={handleSaveData} variant="outlined" color="inherit" size="small"><DoneIcon /></Button>
+      <Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
+          <Box sx={{display: "flex"}}>
+          <Typography variant='h5'>담당자 정보</Typography>
+          <Button onClick={handleInfoAdd} color="inherit" size="small"><AddIcon /></Button>
           </Box>
           <Box>
-            <Button onClick={onClose} variant="outlined" color="inherit" size="small"><CloseIcon /></Button>
+            <Button onClick={handleInfoClose} color="inherit" size="small"><CloseIcon /></Button>
           </Box>
         </Box>
-        <TableContainer component={Paper}>
-          <Table sx={{ width: '100%' }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">담당자</TableCell>
-                <TableCell align="left">번호</TableCell>
-                <TableCell align="left">이메일</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {[...rows, ...newRows].map((row, index) => (
-                <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                    {row.isNew ? (
-                      <TextField value={row.administrator} onChange={e => handleChange(row.id, 'administrator', e.target.value)} fullWidth />
-                    ) : (
-                      row.administrator
-                    )}
-                  </TableCell>
-                  <TableCell align="left">
-                    {row.isNew ? (
-                      <TextField value={row.call} onChange={e => handleChange(row.id, 'call', e.target.value)} fullWidth />
-                    ) : (
-                      row.call
-                    )}
-                  </TableCell>
-                  <TableCell align="left">
-                    {row.isNew ? (
-                      <TextField value={row.email} onChange={e => handleChange(row.id, 'email', e.target.value)} fullWidth />
-                    ) : (
-                      row.email
-                    )}
-                  </TableCell>
-                  <TableCell align="right"><Button onClick={() => handleDelete(row.id)}><DeleteIcon/></Button></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Box>
+        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+          {[...rows, ...newRows].map((row) => (
+            <ListItem key={row.id} alignItems="flex-start">
+              <ListItemAvatar>
+                <Avatar>{row.name && row.name.length > 0 ? row.name[0].toUpperCase() : '?'}</Avatar>
+              </ListItemAvatar>
+              {(editMode && editMode.id === row.id) || row.isNew ? (
+                <Box sx={{ display: 'flex', width: '100%' }}>
+                  <Box>
+                  <TextField 
+                    value={row.isNew ? row.name : editMode.name} 
+                    onChange={e => row.isNew ? handleInfoChange(row.id, 'name', e.target.value) : setEditMode({...editMode, name: e.target.value})}
+                    placeholder='담당자 이름' 
+                    fullWidth 
+                    variant="standard" 
+                    size='small'
+                  />
+                  <TextField 
+                    value={row.isNew ? row.info : editMode.info} 
+                    onChange={e => row.isNew ? handleInfoChange(row.id, 'info', e.target.value) : setEditMode({...editMode, info: e.target.value})}
+                    placeholder='내선번호 / 이메일' 
+                    fullWidth 
+                    variant="standard" 
+                  />
+                  </Box>
+                  <Button onClick={row.isNew ? handleSaveToFirestore : () => handleUpdateToFirestore()} color="inherit" size="small">
+                    <CheckOutlinedIcon />
+                  </Button>
+                </Box>
+              ) : (
+                <>
+                  <ListItemText 
+                    primary={<span>{row.name}</span>} 
+                    secondary={<span>{row.info}</span>}
+                  />
+                  { !row.isNew && (
+                    <Button onClick={() => handleInfoEdit(row.id, row.name, row.info)}><EditOutlinedIcon /></Button>
+                  )}
+                  { !row.isNew && (
+                    <Button onClick={() => handleInfoDelete(row.id)}>
+                      <DeleteIcon/>
+                    </Button>
+                  )}
+                </>
+              )}
+            </ListItem>
+          ))}
+        </List>
+        </Box>
       </Box>
     </Modal>
   );

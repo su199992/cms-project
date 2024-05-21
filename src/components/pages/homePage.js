@@ -4,7 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from '../auth/firebaseConfig';
 import { styled, useTheme, ThemeProvider } from '@mui/material/styles';
-import { Box,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Typography,Divider,CssBaseline,Button,FormControlLabel,Switch,IconButton, Toolbar } from '@mui/material';
+import { Box,List,ListItem,ListItemButton,ListItemIcon,ListItemText,Typography,Divider,CssBaseline,Button,IconButton, Toolbar, Menu, MenuItem } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -83,28 +83,30 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 const listIcon = [
-  {text: '콘텐츠', icon: <FolderIcon />},
-  {text: '업로드', icon: <UploadFileIcon />}
+  {text: '게시판', icon: <FolderIcon />},
+  {text: '콘텐츠 업로드', icon: <UploadFileIcon />},
+  {text: '아주대 업로드', icon: <UploadFileIcon />}
 ]
 
 const MiniDrawer = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
-  const [open, setOpen] = useState(false);
+  const [drawerOpen, setdrawerOpen] = useState(true);
   const [isAdminInfoOpen, setIsAdminInfoOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const userOpen = Boolean(anchorEl);
+  const theme = useTheme();
 
   const handleLogout = () => {
     navigate('/');
   };
-  
-  const theme = useTheme();
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setdrawerOpen(false);
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setdrawerOpen(true);
   };
 
   const handleAdminInfoOpen = () => {
@@ -114,6 +116,14 @@ const MiniDrawer = () => {
   const handleAdminInfoClose = () => {
     setIsAdminInfoOpen(false);
   };
+
+  const userHandleOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const userHandleClose = () => {
+    setAnchorEl(null);
+  };
+
 
   useEffect(() => {
     // Firebase Auth 상태 변경 감지
@@ -144,36 +154,50 @@ const MiniDrawer = () => {
     <ThemeProvider theme={colorTheme}> 
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={drawerOpen}>
         <Toolbar sx={{display: 'flex', justifyContent: 'space-between', height: '80px'}} >
           <Box sx={{ display: 'flex', alignItems: 'center'}}>
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={handleDrawerClose}
               edge="start"
               sx={{
                 marginRight: 5,
-                ...(open && { display: 'none' }),
+                ...(drawerOpen && { display: 'none' }),
               }}
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h3" noWrap component="div">
-              hunet
-            </Typography>
+            {/* 조건부 렌더링을 사용하여 open이 false일 때만 로고를 표시 */}
+            {!drawerOpen && (
+              <Typography variant="h3" noWrap component="div">
+                hunet
+              </Typography>
+            )}
             </Box>
             <Box>
               <Button variant="outlined" color="inherit" sx={{ marginRight: 0.5 }} onClick={handleAdminInfoOpen}>담당자 정보</Button>
               <AdminInfoModal open={isAdminInfoOpen} onClose={handleAdminInfoClose} />
-              <Button variant="outlined" color="inherit" sx={{ marginRight: 2 }}>{userName}</Button>
-              <FormControlLabel value="login" control={<Switch onChange={handleLogout} />} sx={{ marginRight: 0 }} />
-          </Box>
+              <Button variant="outlined" color="inherit" onClick={userHandleOpen}>{userName}</Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={userOpen}
+                onClose={userHandleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </Box>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader sx={{height: '80px'}}>
-          <IconButton onClick={handleDrawerClose}>
+      <Drawer variant="permanent" open={drawerOpen}>
+        <DrawerHeader sx={{height: '80px', display:'flex', justifyContent:'space-between', paddingLeft:'20px'}}>
+          <Typography variant="h3" noWrap component="div">hunet</Typography>
+          <IconButton onClick={handleDrawerOpen}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
@@ -184,20 +208,20 @@ const MiniDrawer = () => {
               <ListItemButton
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
+                  justifyContent: drawerOpen ? 'initial' : 'center',
                   px: 2.5,
                 }}
               >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: open ? 3 : 'auto',
+                  mr: drawerOpen ? 3 : 'auto',
                   justifyContent: 'center'
                 }}
               > 
                {item.icon}
               </ListItemIcon>
-                <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={item.text} sx={{ opacity: drawerOpen ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
