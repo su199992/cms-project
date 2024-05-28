@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebaseConfig';
-import { TextField, Button, Box, Container, Typography } from '@mui/material';
-import SignUpModal from './signUp';
-import AuthAlert from './authAlert';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebaseConfig";
+import { TextField, Button, Box, Container, Typography } from "@mui/material";
+import SignUpModal from "./signUp";
+import AuthAlert from "./authAlert";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
-  const [errorCode, setErrorCode] = useState('');
+  const [errorCode, setErrorCode] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-  e.preventDefault();  
+    e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/homePage')
+      navigate("/homePage");
     } catch (error) {
       setErrorCode(error.code);
     }
@@ -32,90 +32,56 @@ const LoginForm = () => {
   };
 
   return (
-  <Container
-    sx={{
-      display: 'flex', // Flex 컨테이너로 만듦
-      flexDirection: 'column', // 자식 요소를 세로로 정렬
-      justifyContent: 'center', // 자식 요소를 세로 중앙에 정렬
-      alignItems: 'center', // 자식 요소를 가로 중앙에 정렬
-      height: '100vh', // 컨테이너의 높이를 뷰포트 높이의 100%로 설정
-    }}
-  >
-  <Box
+    <Container
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: 550,
-        height: 450,
-        border: '1px solid', 
-        borderColor: 'grey.500',
-        boxSizing: 'border-box'
-      }}
-    >
-      <Typography 
-        variant="h4" 
-        component="h1" 
-        gutterBottom 
-        sx={{ fontSize: 70, color: 'red', marginTop: 2.5 }}>
-        hunet
-      </Typography>
-      <Box 
-        component="form" 
-        onSubmit={handleLogin} 
-        noValidate
-        sx={{ display: 'flex', flexDirection: 'column', width: '90%', alignItems: 'center' }}
-      >
-        <TextField
-          label="Email"
-          type="email"
-          variant="outlined"
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          sx={{ width: '90%' }}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          variant="outlined"
-          autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          margin="normal"
-          sx={{ marginBottom: 4, width: '90%' }}
-        />
-        <Button 
-          type="submit" 
-          variant="contained" 
-          sx={{
-            height: 56,
-            fontSize: 22,
-            backgroundColor: 'grey',
-            marginBottom: 1.5,
-            fontWeight: 700,
-            ":hover": {backgroundColor :'grey'},
-            width: '90%',
-          }}>
-          L O G I N
-        </Button>
-        <Button 
-          onClick={handleSignUpOpen} 
-          sx={{ textTransform: 'none', fontSize: '18px'}}>
-          SignUp
-        </Button>
-        <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
+        display: "flex", // Flex 컨테이너로 만듦
+        flexDirection: "column", // 자식 요소를 세로로 정렬
+        justifyContent: "center", // 자식 요소를 세로 중앙에 정렬
+        alignItems: "center", // 자식 요소를 가로 중앙에 정렬
+        height: "100vh", // 컨테이너의 높이를 뷰포트 높이의 100%로 설정
+      }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: 550,
+          height: 450,
+          border: "1px solid",
+          borderColor: "grey.500",
+          boxSizing: "border-box",
+        }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: 70, color: "red", marginTop: 2.5 }}>
+          hunet
+        </Typography>
+        <Box component="form" onSubmit={handleLogin} noValidate sx={{ display: "flex", flexDirection: "column", width: "90%", alignItems: "center" }}>
+          <TextField label="Email" type="email" variant="outlined" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required sx={{ width: "90%" }} />
+          <TextField label="Password" type="password" variant="outlined" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required margin="normal" sx={{ marginBottom: 4, width: "90%" }} />
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              height: 56,
+              fontSize: 22,
+              backgroundColor: "grey",
+              marginBottom: 1.5,
+              fontWeight: 700,
+              ":hover": { backgroundColor: "grey" },
+              width: "90%",
+            }}>
+            L O G I N
+          </Button>
+          <Button onClick={handleSignUpOpen} sx={{ textTransform: "none", fontSize: "18px" }}>
+            SignUp
+          </Button>
+          <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
+        </Box>
+        <Typography variant="body2" sx={{ fontSize: 20, ontWeight: 700 }}>
+          Open Contents Management System
+        </Typography>
       </Box>
-      <Typography variant="body2" 
-        sx={{ fontSize: 20, ontWeight: 700 }}>
-        Open Contents Management System
-      </Typography>
-    </Box>
-    <AuthAlert errorCode={errorCode}/>
+      <AuthAlert errorCode={errorCode} />
     </Container>
-    
   );
 };
 
