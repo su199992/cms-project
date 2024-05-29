@@ -4,10 +4,10 @@ import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: "cms-project-3b03e.firebaseapp.com",
-  projectId: "cms-project-3b03e",
-  storageBucket: "cms-project-3b03e.appspot.com",
-  messagingSenderId: "401791024748",
+  authDomain: "cms-project-20b21.firebaseapp.com",
+  projectId: "cms-project-20b21",
+  storageBucket: "cms-project-20b21.appspot.com",
+  messagingSenderId: "397423654782",
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
