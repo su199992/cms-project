@@ -15,6 +15,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import colorTheme from "./colorTheme";
 import AdminInfoModal from "./adminInfo";
 import FileUploadPage from "./fileUploadPage";
+//import useAuth from "../../hooks/useAuth";
 
 const drawerWidth = 240;
 
@@ -82,19 +83,21 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
 }));
 
 const listIcon = [
-  { text: "게시판", icon: <FolderIcon /> },
-  { text: "콘텐츠 업로드", icon: <UploadFileIcon />, page: <FileUploadPage /> },
-  { text: "아주대 업로드", icon: <UploadFileIcon /> },
+  { text: "홈", icon: <FolderIcon />, component: "home" },
+  { text: "콘텐츠 업로드", icon: <UploadFileIcon />, component: "fileUpload" },
+  { text: "아주대 업로드", icon: <UploadFileIcon />, component: "ajouUpload" },
 ];
 
 const HomePage = () => {
+  //useAuth(); // 인증 상태를 확인하고 리다이렉션 처리
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [drawerOpen, setdrawerOpen] = useState(true);
   const [isAdminInfoOpen, setIsAdminInfoOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const userOpen = Boolean(anchorEl);
   const theme = useTheme();
+  const [selectedComponent, setSelectedComponent] = useState("home"); // 현재 선택된 페이지 상태 관리
 
   const handleLogout = () => {
     navigate("/");
@@ -123,10 +126,6 @@ const HomePage = () => {
     setAnchorEl(null);
   };
 
-  const handleFileUploadPage = () => {
-    navigate("/fileUploadPage");
-  };
-
   useEffect(() => {
     // Firebase Auth 상태 변경 감지
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -151,6 +150,22 @@ const HomePage = () => {
     // 컴포넌트 언마운트 시 구독 해제
     return () => unsubscribe();
   }, []);
+
+  const renderComponent = () => {
+    switch (selectedComponent) {
+      case "home":
+        return <div>홈페이지 콘텐츠</div>;
+
+      case "fileUpload":
+        return <FileUploadPage />;
+
+      case "ajouUpload":
+        return <div>아주대 업로드 페이지</div>;
+
+      default:
+        return <div>홈페이지 콘텐츠</div>;
+    }
+  };
 
   return (
     <ThemeProvider theme={colorTheme}>
@@ -207,7 +222,7 @@ const HomePage = () => {
           </DrawerHeader>
           <Divider />
           <List>
-            {listIcon.map((item, index) => (
+            {listIcon.map((item) => (
               <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
                   sx={{
@@ -215,11 +230,7 @@ const HomePage = () => {
                     justifyContent: drawerOpen ? "initial" : "center",
                     px: 2.5,
                   }}
-                  onClick={() => {
-                    if (item.page === "handleFileUploadPage") {
-                      handleFileUploadPage();
-                    }
-                  }}>
+                  onClick={() => setSelectedComponent(item.component)}>
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
@@ -236,6 +247,7 @@ const HomePage = () => {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
+          {renderComponent()}
         </Box>
       </Box>
     </ThemeProvider>
