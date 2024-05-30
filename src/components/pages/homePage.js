@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../auth/firebaseConfig";
 import { styled, useTheme, ThemeProvider } from "@mui/material/styles";
+// prettier-ignore
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, CssBaseline, Button, IconButton, Toolbar, Menu, MenuItem } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
@@ -15,7 +16,6 @@ import FolderIcon from "@mui/icons-material/Folder";
 import colorTheme from "./colorTheme";
 import AdminInfoModal from "./adminInfo";
 import FileUploadPage from "./fileUploadPage";
-//import useAuth from "../../hooks/useAuth";
 
 const drawerWidth = 240;
 
@@ -51,19 +51,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
   }),
 }));
 
@@ -83,16 +75,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
 }));
 
 const listIcon = [
-  { text: "홈", icon: <FolderIcon />, component: "home" },
   { text: "콘텐츠 업로드", icon: <UploadFileIcon />, component: "fileUpload" },
-  { text: "아주대 업로드", icon: <UploadFileIcon />, component: "ajouUpload" },
+  { text: "콘텐츠 다운로드", icon: <UploadFileIcon />, component: "ajouUpload" },
+  { text: "게시판", icon: <FolderIcon />, component: "board" },
 ];
 
 const HomePage = () => {
-  //useAuth(); // 인증 상태를 확인하고 리다이렉션 처리
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
-  const [drawerOpen, setdrawerOpen] = useState(true);
+  const [drawerOpen, setdrawerOpen] = useState(false);
   const [isAdminInfoOpen, setIsAdminInfoOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const userOpen = Boolean(anchorEl);
@@ -104,11 +95,11 @@ const HomePage = () => {
   };
 
   const handleDrawerOpen = () => {
-    setdrawerOpen(false);
+    setdrawerOpen(true);
   };
 
   const handleDrawerClose = () => {
-    setdrawerOpen(true);
+    setdrawerOpen(false);
   };
 
   const handleAdminInfoOpen = () => {
@@ -155,13 +146,10 @@ const HomePage = () => {
     switch (selectedComponent) {
       case "home":
         return <div>홈페이지 콘텐츠</div>;
-
       case "fileUpload":
         return <FileUploadPage />;
-
       case "ajouUpload":
         return <div>아주대 업로드 페이지</div>;
-
       default:
         return <div>홈페이지 콘텐츠</div>;
     }
@@ -171,26 +159,22 @@ const HomePage = () => {
     <ThemeProvider theme={colorTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="fixed" open={drawerOpen}>
+        <AppBar position="fixed">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between", height: "80px" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
-                onClick={handleDrawerClose}
+                onClick={drawerOpen ? handleDrawerClose : handleDrawerOpen}
                 edge="start"
-                sx={{
-                  marginRight: 5,
-                  ...(drawerOpen && { display: "none" }),
-                }}>
+                sx={{ marginRight: 1 }}>
                 <MenuIcon />
               </IconButton>
-              {/* 조건부 렌더링을 사용하여 open이 false일 때만 로고를 표시 */}
-              {!drawerOpen && (
+              <Button>
                 <Typography variant="h3" noWrap component="div">
                   hunet
                 </Typography>
-              )}
+              </Button>
             </Box>
             <Box>
               <Button variant="outlined" color="inherit" sx={{ marginRight: 0.5 }} onClick={handleAdminInfoOpen}>
@@ -215,10 +199,7 @@ const HomePage = () => {
         </AppBar>
         <Drawer variant="permanent" open={drawerOpen}>
           <DrawerHeader sx={{ height: "80px", display: "flex", justifyContent: "space-between", paddingLeft: "20px" }}>
-            <Typography variant="h3" noWrap component="div">
-              hunet
-            </Typography>
-            <IconButton onClick={handleDrawerOpen}>{theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}</IconButton>
+            <IconButton onClick={handleDrawerClose}>{theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}</IconButton>
           </DrawerHeader>
           <Divider />
           <List>

@@ -54,9 +54,32 @@ const LoginForm = () => {
         <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: 70, color: "red", marginTop: 2.5 }}>
           hunet
         </Typography>
-        <Box component="form" onSubmit={handleLogin} noValidate sx={{ display: "flex", flexDirection: "column", width: "90%", alignItems: "center" }}>
-          <TextField label="Email" type="email" variant="outlined" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required sx={{ width: "90%" }} />
-          <TextField label="Password" type="password" variant="outlined" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required margin="normal" sx={{ marginBottom: 4, width: "90%" }} />
+        <Box
+          component="form"
+          onSubmit={handleLogin}
+          noValidate
+          sx={{ display: "flex", flexDirection: "column", width: "90%", alignItems: "center" }}>
+          <TextField
+            label="Email"
+            type="email"
+            variant="outlined"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            sx={{ width: "90%" }}
+          />
+          <TextField
+            label="Password"
+            type="password"
+            variant="outlined"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            margin="normal"
+            sx={{ marginBottom: 4, width: "90%" }}
+          />
           <Button
             type="submit"
             variant="contained"

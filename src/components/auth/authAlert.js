@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Snackbar, Alert } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { Snackbar, Alert } from "@mui/material";
 
 const AuthAlert = ({ errorCode, successMessage }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [alertMessage, setalertMessage] = useState('');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [alertMessage, setalertMessage] = useState("");
 
   useEffect(() => {
     if (errorCode) {
       setSnackbarMessage(getErrorMessage(errorCode));
       setSnackbarOpen(true);
-      setalertMessage('error');
+      setalertMessage("error");
     } else if (successMessage) {
       setSnackbarMessage(successMessage);
       setSnackbarOpen(true);
-      setalertMessage('success');
+      setalertMessage("success");
     }
   }, [errorCode, successMessage]);
 
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setSnackbarOpen(false);
@@ -50,15 +50,12 @@ const AuthAlert = ({ errorCode, successMessage }) => {
   };
 
   return (
-    <Snackbar 
-      open={snackbarOpen} 
-      autoHideDuration={3000} 
-      onClose={handleCloseSnackbar} 
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-      <Alert 
-        onClose={handleCloseSnackbar} 
-        severity={alertMessage} 
-        sx={{ width: '100%' }}>
+    <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={3000}
+      onClose={handleCloseSnackbar}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+      <Alert onClose={handleCloseSnackbar} severity={alertMessage} sx={{ width: "100%" }}>
         {snackbarMessage}
       </Alert>
     </Snackbar>

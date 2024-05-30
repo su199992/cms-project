@@ -1,17 +1,17 @@
-import { React, useState } from 'react';
-import { auth, db } from './firebaseConfig';
+import { React, useState } from "react";
+import { auth, db } from "./firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { TextField, Button, Box, Dialog, DialogTitle, DialogContent } from '@mui/material';
-import AuthAlert from './authAlert';
+import { TextField, Button, Box, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import AuthAlert from "./authAlert";
 
 const SignUpModal = ({ open, onClose }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorCode, setErrorCode] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorCode, setErrorCode] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ const SignUpModal = ({ open, onClose }) => {
 
     // 비밀번호와 비밀번호 확인이 일치하지 않으면 에러 설정
     if (password !== confirmPassword) {
-      setErrorCode('passwordConfirm');
+      setErrorCode("passwordConfirm");
       return; // 회원가입 시도 중지
     }
 
@@ -30,12 +30,13 @@ const SignUpModal = ({ open, onClose }) => {
         name: name,
         email: email,
       });
-      setSuccessMessage('회원가입 완료');
+      setSuccessMessage("회원가입 완료");
       // 회원가입이 완료되면 입력 필드 리셋
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      onClose();
     } catch (error) {
       setErrorCode(error.code);
     }
@@ -45,7 +46,7 @@ const SignUpModal = ({ open, onClose }) => {
     <>
       <Box>
         <Dialog open={open} onClose={onClose}>
-          <DialogTitle sx={{ textAlign: 'center', fontWeight: 700, fontSize: 30 }}>SignUp</DialogTitle>
+          <DialogTitle sx={{ textAlign: "center", fontWeight: 700, fontSize: 30 }}>SignUp</DialogTitle>
           <DialogContent>
             <Box component="form" onSubmit={handleSignUp} sx={{ padding: 2 }}>
               <TextField
@@ -55,7 +56,7 @@ const SignUpModal = ({ open, onClose }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                sx={{ width: '100%', marginBottom: 3 }}
+                sx={{ width: "100%", marginBottom: 3 }}
               />
               <TextField
                 label="Email"
@@ -64,7 +65,7 @@ const SignUpModal = ({ open, onClose }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                sx={{ width: '100%', marginBottom: 3 }}
+                sx={{ width: "100%", marginBottom: 3 }}
               />
               <TextField
                 label="Password"
@@ -73,7 +74,7 @@ const SignUpModal = ({ open, onClose }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                sx={{ width: '100%', marginBottom: 3 }}
+                sx={{ width: "100%", marginBottom: 3 }}
               />
               <TextField
                 label="Confirm Password"
@@ -82,12 +83,9 @@ const SignUpModal = ({ open, onClose }) => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                sx={{ width: '100%', marginBottom: 3 }}
+                sx={{ width: "100%", marginBottom: 3 }}
               />
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{ height: 56, fontSize: 22, fontWeight: 700, width: '100%', textTransform: 'none' }}>
+              <Button type="submit" variant="contained" sx={{ height: 56, fontSize: 22, fontWeight: 700, width: "100%", textTransform: "none" }}>
                 SignUp
               </Button>
             </Box>
