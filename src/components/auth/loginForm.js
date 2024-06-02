@@ -34,11 +34,11 @@ const LoginForm = () => {
   return (
     <Container
       sx={{
-        display: "flex", // Flex 컨테이너로 만듦
-        flexDirection: "column", // 자식 요소를 세로로 정렬
-        justifyContent: "center", // 자식 요소를 세로 중앙에 정렬
-        alignItems: "center", // 자식 요소를 가로 중앙에 정렬
-        height: "100vh", // 컨테이너의 높이를 뷰포트 높이의 100%로 설정
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
       }}>
       <Box
         sx={{
@@ -51,14 +51,18 @@ const LoginForm = () => {
           borderColor: "grey.500",
           boxSizing: "border-box",
         }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: 70, color: "red", marginTop: 2.5 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          gutterBottom
+          sx={{ fontSize: 70, color: "#9A9899", marginTop: 2.5, fontFamily: "NanumGothic", fontWeight: "700" }}>
           hunet
         </Typography>
         <Box
           component="form"
           onSubmit={handleLogin}
           noValidate
-          sx={{ display: "flex", flexDirection: "column", width: "90%", alignItems: "center" }}>
+          sx={{ display: "flex", flexDirection: "column", width: "90%", alignItems: "center", fontFamily: "NanumGothic" }}>
           <TextField
             label="Email"
             type="email"
@@ -67,7 +71,9 @@ const LoginForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            sx={{ width: "90%" }}
+            sx={{
+              width: "90%",
+            }}
           />
           <TextField
             label="Password"
@@ -78,7 +84,10 @@ const LoginForm = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
             margin="normal"
-            sx={{ marginBottom: 4, width: "90%" }}
+            sx={{
+              marginBottom: 4,
+              width: "90%",
+            }}
           />
           <Button
             type="submit"
@@ -86,20 +95,22 @@ const LoginForm = () => {
             sx={{
               height: 56,
               fontSize: 22,
-              backgroundColor: "grey",
               marginBottom: 1.5,
               fontWeight: 700,
-              ":hover": { backgroundColor: "grey" },
               width: "90%",
+              fontFamily: "NanumGothic",
             }}>
             L O G I N
           </Button>
-          <Button onClick={handleSignUpOpen} sx={{ textTransform: "none", fontSize: "18px" }}>
+          <Button
+            onClick={handleSignUpOpen}
+            color="error"
+            sx={{ textTransform: "none", fontSize: "18px", fontFamily: "NanumGothic" }}>
             SignUp
           </Button>
           <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
         </Box>
-        <Typography variant="body2" sx={{ fontSize: 20, ontWeight: 700 }}>
+        <Typography variant="body2" sx={{ fontSize: 20, ontWeight: 700, color: "#9A9899", fontFamily: "NanumGothic" }}>
           Open Contents Management System
         </Typography>
       </Box>

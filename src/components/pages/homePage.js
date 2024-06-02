@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../auth/firebaseConfig";
-import { styled, useTheme, ThemeProvider } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 // prettier-ignore
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography, Divider, CssBaseline, Button, IconButton, Toolbar, Menu, MenuItem } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
@@ -13,7 +13,6 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import FolderIcon from "@mui/icons-material/Folder";
-import colorTheme from "./colorTheme";
 import AdminInfoModal from "./adminInfo";
 import FileUploadPage from "./fileUploadPage";
 
@@ -45,7 +44,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -83,7 +81,7 @@ const listIcon = [
 const HomePage = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
-  const [drawerOpen, setdrawerOpen] = useState(false);
+  const [drawerOpen, setdrawerOpen] = useState(true);
   const [isAdminInfoOpen, setIsAdminInfoOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const userOpen = Boolean(anchorEl);
@@ -156,82 +154,82 @@ const HomePage = () => {
   };
 
   return (
-    <ThemeProvider theme={colorTheme}>
-      <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar position="fixed">
-          <Toolbar sx={{ display: "flex", justifyContent: "space-between", height: "80px" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={drawerOpen ? handleDrawerClose : handleDrawerOpen}
-                edge="start"
-                sx={{ marginRight: 1 }}>
-                <MenuIcon />
-              </IconButton>
-              <Button>
-                <Typography variant="h3" noWrap component="div">
-                  hunet
-                </Typography>
-              </Button>
-            </Box>
-            <Box>
-              <Button variant="outlined" color="inherit" sx={{ marginRight: 0.5 }} onClick={handleAdminInfoOpen}>
-                담당자 정보
-              </Button>
-              <AdminInfoModal open={isAdminInfoOpen} onClose={handleAdminInfoClose} />
-              <Button variant="outlined" color="inherit" onClick={userHandleOpen}>
-                {userName}
-              </Button>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={userOpen}
-                onClose={userHandleClose}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
-            </Box>
-          </Toolbar>
-        </AppBar>
-        <Drawer variant="permanent" open={drawerOpen}>
-          <DrawerHeader sx={{ height: "80px", display: "flex", justifyContent: "space-between", paddingLeft: "20px" }}>
-            <IconButton onClick={handleDrawerClose}>{theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}</IconButton>
-          </DrawerHeader>
-          <Divider />
-          <List>
-            {listIcon.map((item) => (
-              <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <AppBar position="fixed">
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between", height: "80px" }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={drawerOpen ? handleDrawerClose : handleDrawerOpen}
+              edge="start"
+              sx={{ marginRight: 1 }}>
+              <MenuIcon />
+            </IconButton>
+            <Button>
+              <Typography variant="h3" noWrap component="div" sx={{ color: "#FEFAFA", textTransform: "lowercase" }}>
+                hunet
+              </Typography>
+            </Button>
+          </Box>
+          <Box>
+            <Button variant="outlined" color="inherit" sx={{ marginRight: 0.5 }} onClick={handleAdminInfoOpen}>
+              담당자 정보
+            </Button>
+            <AdminInfoModal open={isAdminInfoOpen} onClose={handleAdminInfoClose} />
+            <Button variant="outlined" color="inherit" onClick={userHandleOpen}>
+              {userName}
+            </Button>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={userOpen}
+              onClose={userHandleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Drawer variant="permanent" open={drawerOpen}>
+        <DrawerHeader sx={{ height: "80px", display: "flex", justifyContent: "space-between", paddingLeft: "20px" }}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "rtl" ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        <List>
+          {listIcon.map((item) => (
+            <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: drawerOpen ? "initial" : "center",
+                  px: 2.5,
+                }}
+                onClick={() => setSelectedComponent(item.component)}>
+                <ListItemIcon
                   sx={{
-                    minHeight: 48,
-                    justifyContent: drawerOpen ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                  onClick={() => setSelectedComponent(item.component)}>
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: drawerOpen ? 3 : "auto",
-                      justifyContent: "center",
-                    }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} sx={{ opacity: drawerOpen ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <DrawerHeader />
-          {renderComponent()}
-        </Box>
+                    minWidth: 0,
+                    mr: drawerOpen ? 3 : "auto",
+                    justifyContent: "center",
+                  }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} sx={{ opacity: drawerOpen ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+        {renderComponent()}
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 };
 

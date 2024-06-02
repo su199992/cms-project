@@ -3,6 +3,7 @@
   display: flex;
   width: 100vw;
   height: 100vh;
+  font-family: "NanumGothic";
 }
 
 .icon {
@@ -25,12 +26,12 @@
 }
 
 .preview {
-  width: 300px;
-  height: 150px;
+  width: 700px;
+  height: 450px;
   margin: auto;
   background-color: #fff;
   border-radius: 5px;
-  border: 3px dashed #eee;
+  border: 3px dashed #9a9899;
   padding: 70px;
   display: flex;
   flex-direction: column;
@@ -40,7 +41,7 @@
 }
 
 .preview:hover {
-  border-color: #111;
+  border-color: #54424b;
 }
 
 .preview_msg {

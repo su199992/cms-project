@@ -1,15 +1,23 @@
 import React, { useState } from "react";
 import { ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../components/auth/firebaseConfig";
+import { Container, Box, Button } from "@mui/material";
+import UploadIcon from "@mui/icons-material/Upload";
+import CircularProgressWithLabel from "../../hooks/CircularProgressWithLabel";
 
 import "./fileUploadPage.css";
 
-const FileInfo = ({ uploadedInfo }) => (
+const FileInfo = ({ uploadedInfo, progress }) => (
   <ul className="preview_info">
-    {Object.entries(uploadedInfo).map(([key, value]) => (
-      <li key={key}>
-        <span className="info_key">{key}</span>
-        <span className="info_value">{value}</span>
+    {uploadedInfo.map((file, index) => (
+      <li key={index} className="file_info_item">
+        <Box display="flex" alignItems="center">
+          <span className="info_key">{file.name}</span>
+
+          <CircularProgressWithLabel value={progress[file.name] || 0} />
+        </Box>
+
+        <span className="info_value">{file.size}</span>
       </li>
     ))}
   </ul>
@@ -77,26 +85,26 @@ const FileUploadPage = () => {
   };
 
   return (
-    <label className={`preview${isActive ? " active" : ""}`} onDragEnter={handleDragStart} onDragOver={handleDragOver} onDragLeave={handleDragEnd} onDrop={handleDrop}>
-      <input type="file" className="file" multiple onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
-      {uploadedInfo.map((info, index) => (
-        <FileInfo key={index} uploadedInfo={info} />
-      ))}
-      <p>Progress:</p>
-      <ul>
-        {Object.entries(progress).map(([fileName, prog]) => (
-          <li key={fileName}>
-            {fileName}: {prog}%
-          </li>
-        ))}
-      </ul>
-      {!uploadedInfo.length && (
-        <>
+    <Container sx={{ display: "flex" }}>
+      <Box>
+        <label
+          className={`preview${isActive ? " active" : ""}`}
+          onDragEnter={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragEnd}
+          onDrop={handleDrop}>
+          <input type="file" className="file" multiple onChange={handleFileChange} />
+          <UploadIcon sx={{ fontSize: 80 }} />
           <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
-        </>
-      )}
-    </label>
+        </label>
+      </Box>
+      <Box sx={{ width: "300px", border: "2px solid #9A9899", borderRadius: "5px" }}>
+        {uploadedInfo.length > 0 && <FileInfo uploadedInfo={uploadedInfo} progress={progress} />}
+        <Button variant="contained" onClick={handleUpload} sx={{ margin: "10px 0" }}>
+          Upload
+        </Button>
+      </Box>
+    </Container>
   );
 };
 

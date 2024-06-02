@@ -85,7 +85,10 @@ const SignUpModal = ({ open, onClose }) => {
                 required
                 sx={{ width: "100%", marginBottom: 3 }}
               />
-              <Button type="submit" variant="contained" sx={{ height: 56, fontSize: 22, fontWeight: 700, width: "100%", textTransform: "none" }}>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ height: 56, fontSize: 22, fontWeight: 700, width: "100%", textTransform: "none" }}>
                 SignUp
               </Button>
             </Box>

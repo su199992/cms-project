@@ -3,6 +3,7 @@ import LoginForm from "./components/auth/loginForm";
 import SignUp from "./components/auth/signUp";
 import HomePage from "./components/pages/homePage";
 import "./styles/reset.css";
+import "./App.css";
 
 function App() {
   return (
