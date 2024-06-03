@@ -3,7 +3,7 @@ import { ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../components/auth/firebaseConfig";
 import { Container, Box, Button } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
-import CircularProgressWithLabel from "../../hooks/CircularProgressWithLabel";
+import LinearProgressWithLabel from "../../hooks/LinearProgressWithLabel";
 
 import "./fileUploadPage.css";
 
@@ -11,13 +11,11 @@ const FileInfo = ({ uploadedInfo, progress }) => (
   <ul className="preview_info">
     {uploadedInfo.map((file, index) => (
       <li key={index} className="file_info_item">
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" justifyContent="space-between">
           <span className="info_key">{file.name}</span>
-
-          <CircularProgressWithLabel value={progress[file.name] || 0} />
+          <span className="info_value">{file.size}</span>
         </Box>
-
-        <span className="info_value">{file.size}</span>
+        <LinearProgressWithLabel value={progress[file.name] || 0} />
       </li>
     ))}
   </ul>
@@ -85,7 +83,7 @@ const FileUploadPage = () => {
   };
 
   return (
-    <Container sx={{ display: "flex" }}>
+    <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", overflow: "hidden" }}>
       <Box>
         <label
           className={`preview${isActive ? " active" : ""}`}
@@ -98,7 +96,7 @@ const FileUploadPage = () => {
           <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
         </label>
       </Box>
-      <Box sx={{ width: "300px", border: "2px solid #9A9899", borderRadius: "5px" }}>
+      <Box sx={{ width: "300px", border: "2px solid #9A9899", borderRadius: "5px", padding: "15px" }}>
         {uploadedInfo.length > 0 && <FileInfo uploadedInfo={uploadedInfo} progress={progress} />}
         <Button variant="contained" onClick={handleUpload} sx={{ margin: "10px 0" }}>
           Upload

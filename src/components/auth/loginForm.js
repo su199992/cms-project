@@ -46,23 +46,21 @@ const LoginForm = () => {
           flexDirection: "column",
           alignItems: "center",
           width: 550,
-          height: 450,
-          border: "1px solid",
-          borderColor: "grey.500",
+          border: "1px solid #9A9899",
           boxSizing: "border-box",
         }}>
         <Typography
           variant="h4"
           component="h1"
           gutterBottom
-          sx={{ fontSize: 70, color: "#9A9899", marginTop: 2.5, fontFamily: "NanumGothic", fontWeight: "700" }}>
+          sx={{ fontSize: 70, color: "#9A9899", marginTop: 2.5, fontWeight: "600" }}>
           hunet
         </Typography>
         <Box
           component="form"
           onSubmit={handleLogin}
           noValidate
-          sx={{ display: "flex", flexDirection: "column", width: "90%", alignItems: "center", fontFamily: "NanumGothic" }}>
+          sx={{ display: "flex", flexDirection: "column", width: "90%", alignItems: "center" }}>
           <TextField
             label="Email"
             type="email"
@@ -72,7 +70,7 @@ const LoginForm = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
             sx={{
-              width: "90%",
+              width: "100%",
             }}
           />
           <TextField
@@ -86,7 +84,7 @@ const LoginForm = () => {
             margin="normal"
             sx={{
               marginBottom: 4,
-              width: "90%",
+              width: "100%",
             }}
           />
           <Button
@@ -97,20 +95,16 @@ const LoginForm = () => {
               fontSize: 22,
               marginBottom: 1.5,
               fontWeight: 700,
-              width: "90%",
-              fontFamily: "NanumGothic",
+              width: "100%",
             }}>
             L O G I N
           </Button>
-          <Button
-            onClick={handleSignUpOpen}
-            color="error"
-            sx={{ textTransform: "none", fontSize: "18px", fontFamily: "NanumGothic" }}>
+          <Button onClick={handleSignUpOpen} color="error" sx={{ textTransform: "none", fontSize: "18px" }}>
             SignUp
           </Button>
           <SignUpModal open={isSignUpModalOpen} onClose={handleSignUpClose} />
         </Box>
-        <Typography variant="body2" sx={{ fontSize: 20, ontWeight: 700, color: "#9A9899", fontFamily: "NanumGothic" }}>
+        <Typography variant="body2" sx={{ fontSize: 20, ontWeight: 700, color: "#9A9899" }}>
           Open Contents Management System
         </Typography>
       </Box>

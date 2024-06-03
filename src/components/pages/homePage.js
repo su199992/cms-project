@@ -145,7 +145,11 @@ const HomePage = () => {
       case "home":
         return <div>홈페이지 콘텐츠</div>;
       case "fileUpload":
-        return <FileUploadPage />;
+        return (
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", overflow: "hidden" }}>
+            <FileUploadPage />
+          </Box>
+        );
       case "ajouUpload":
         return <div>아주대 업로드 페이지</div>;
       default:
@@ -154,7 +158,7 @@ const HomePage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", overflow: "hidden" }}>
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", height: "80px" }}>
