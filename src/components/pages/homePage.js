@@ -145,11 +145,7 @@ const HomePage = () => {
       case "home":
         return <div>홈페이지 콘텐츠</div>;
       case "fileUpload":
-        return (
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", overflow: "hidden" }}>
-            <FileUploadPage />
-          </Box>
-        );
+        return <FileUploadPage />;
       case "ajouUpload":
         return <div>아주대 업로드 페이지</div>;
       default:

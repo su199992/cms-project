@@ -1,7 +1,9 @@
-.icon {
-  width: 100px;
-  height: 100px;
-  pointer-events: none;
+.file_info_item {
+  margin-bottom: 18px;
+}
+
+.info_value {
+  font-size: 12px;
 }
 
 .file {
@@ -18,9 +20,9 @@
 }
 
 .preview {
-  width: 700px;
+  width: 500px;
   height: 450px;
-  margin: auto;
+  margin-right: 20px;
   background-color: #fff;
   border-radius: 5px;
   border: 3px dashed #9a9899;

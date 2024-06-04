@@ -3,17 +3,25 @@ import { ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../../components/auth/firebaseConfig";
 import { Container, Box, Button } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
+import CloseIcon from "@mui/icons-material/Close";
 import LinearProgressWithLabel from "../../hooks/LinearProgressWithLabel";
 
 import "./fileUploadPage.css";
 
-const FileInfo = ({ uploadedInfo, progress }) => (
+const FileInfo = ({ uploadedInfo, progress, onRemove }) => (
   <ul className="preview_info">
     {uploadedInfo.map((file, index) => (
       <li key={index} className="file_info_item">
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <span className="info_key">{file.name}</span>
-          <span className="info_value">{file.size}</span>
+        <Box display="flex" alignItems="center" justifyContent="space-between" paddingRight="10px">
+          <Box display="flex" alignItems="center" width="90%">
+            <span className="info_key">{file.name}</span>
+            <span className="info_value" style={{ marginLeft: "auto", marginRight: "10px" }}>
+              {file.size}
+            </span>
+            <Button onClick={() => onRemove(index)} sx={{ color: "#9A9899", padding: 0, minWidth: "24px" }}>
+              <CloseIcon fontSize="8px" />
+            </Button>
+          </Box>
         </Box>
         <LinearProgressWithLabel value={progress[file.name] || 0} />
       </li>
@@ -24,11 +32,11 @@ const FileInfo = ({ uploadedInfo, progress }) => (
 const FileUploadPage = () => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
-  const [isActive, setActive] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const [uploadedInfo, setUploadedInfo] = useState([]);
 
-  const handleDragStart = () => setActive(true);
-  const handleDragEnd = () => setActive(false);
+  const handleDragStart = () => setIsActive(true);
+  const handleDragEnd = () => setIsActive(false);
   const handleDragOver = (event) => {
     event.preventDefault();
   };
@@ -45,17 +53,24 @@ const FileUploadPage = () => {
 
   const handleDrop = (event) => {
     event.preventDefault();
-    setActive(false);
+    setIsActive(false);
 
-    const files = Array.from(event.dataTransfer.files); // Array로 변환
-    setFiles(files);
-    setFileInfo(files);
+    const droppedFiles = Array.from(event.dataTransfer.files); // 파일을 Array로 변환
+    setFiles(droppedFiles);
+    setFileInfo(droppedFiles);
   };
 
   const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files); // Array로 변환
+    const selectedFiles = Array.from(e.target.files); // 파일을 Array로 변환
     setFiles(selectedFiles);
     setFileInfo(selectedFiles);
+  };
+
+  const handleRemoveFile = (index) => {
+    const newFiles = [...files];
+    newFiles.splice(index, 1);
+    setFiles(newFiles);
+    setFileInfo(newFiles);
   };
 
   const handleUpload = () => {
@@ -63,18 +78,14 @@ const FileUploadPage = () => {
 
     files.forEach((file) => {
       const storageRef = ref(storage, `Image/${file.name}`);
-
       const uploadTask = uploadBytesResumable(storageRef, file);
-
       uploadTask.on(
         "state_changed",
-
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           newProgress[file.name] = progress;
           setProgress((prevProgress) => ({ ...prevProgress, ...newProgress }));
         },
-
         (error) => {
           console.error("Upload failed", error);
         }
@@ -83,7 +94,14 @@ const FileUploadPage = () => {
   };
 
   return (
-    <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", overflow: "hidden" }}>
+    <Container
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "calc(100vh - 115px)",
+        border: "2px soild #9A9899",
+      }}>
       <Box>
         <label
           className={`preview${isActive ? " active" : ""}`}
@@ -96,11 +114,20 @@ const FileUploadPage = () => {
           <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
         </label>
       </Box>
-      <Box sx={{ width: "300px", border: "2px solid #9A9899", borderRadius: "5px", padding: "15px" }}>
-        {uploadedInfo.length > 0 && <FileInfo uploadedInfo={uploadedInfo} progress={progress} />}
+      <Box
+        sx={{
+          width: "350px",
+          height: "450px",
+          borderTop: "2px solid #9A9899",
+          borderBottom: "2px solid #9A9899",
+          padding: "15px",
+          overflowY: "scroll",
+          overflowX: "hidden",
+        }}>
         <Button variant="contained" onClick={handleUpload} sx={{ margin: "10px 0" }}>
           Upload
         </Button>
+        {uploadedInfo.length > 0 && <FileInfo uploadedInfo={uploadedInfo} progress={progress} onRemove={handleRemoveFile} />}
       </Box>
     </Container>
   );
